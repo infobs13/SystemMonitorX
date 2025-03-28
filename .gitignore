@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Allow only required files
+!README.md
+!.gitignore
+!main.cpp
+!statwidget.h
+!statwidget.cpp
+!systeminfo.pro
+

@@ -16,10 +16,9 @@ StatWidget::StatWidget(QString name, QWidget *parent)
   /*setAttribute(Qt::WA_TranslucentBackground);*/
   /*setAttribute(Qt::WA_ShowWithoutActivating);*/
   /*setFixedSize(200, 50);*/
-  setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint |
-                 Qt::NoDropShadowWindowHint);
+  setWindowFlags(Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
   setAttribute(Qt::WA_ShowWithoutActivating);
-  setAttribute(Qt::WA_X11NetWmWindowTypeDock);
+  setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
   setAutoFillBackground(true);
   setMinimumSize(200, 50);
   setStyleSheet("background-color: rgba(0, 0, 0, 150);");
@@ -55,11 +54,11 @@ StatWidget::StatWidget(QString name, QWidget *parent)
   if (name == "Battery") {
     connect(&updateTimer, &QTimer::timeout, this,
             &StatWidget::updateBatteryStatus);
-    updateTimer.start(5000);
+    updateTimer.start(3000);
   }
   if (name == "Disk") {
     connect(&updateTimer, &QTimer::timeout, this, &StatWidget::updateDiskUsage);
-    updateTimer.start(5000);
+    updateTimer.start(3000);
   }
 }
 
