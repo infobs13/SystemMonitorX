@@ -1,46 +1,30 @@
 #include "qglobal.h"
+#include "qpointer.h"
 #include "statwidget.h"
 #include <QApplication>
 #include <QDebug>
+#include <QPointer>
 #include <QScreen>
-
 int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
+  QList<QPointer<StatWidget>> widgets;
 
   QRect screenGeometry = QApplication::primaryScreen()->geometry();
   int screenWidth = screenGeometry.width();
   int startX = screenWidth - 210;
   int startY = 100;
-  qDebug() << "creating widgets ";
-  StatWidget *cpu = new StatWidget("CPU");
-  StatWidget *ram = new StatWidget("RAM");
-  StatWidget *disk = new StatWidget("Disk");
-  StatWidget *battery = new StatWidget("Battery");
-
-  qDebug() << "cpu wid : " << cpu;
-  qDebug() << "ram wid : " << ram;
-  qDebug() << "disk wid : " << disk;
-  qDebug() << "battery wid : " << battery;
-  cpu->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint |
-                      Qt::WindowStaysOnTopHint);
-  ram->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint |
-                      Qt::WindowStaysOnTopHint);
-  disk->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint |
-                       Qt::WindowStaysOnTopHint);
-  battery->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint |
-                          Qt::WindowStaysOnTopHint);
-
-  cpu->move(startX, startY);
-  cpu->show();
-
-  ram->move(startX, startY + 70);
-  ram->show();
-
-  disk->move(startX, startY + 140);
-  disk->show();
-
-  battery->move(startX, startY + 210);
-  battery->show();
+  widgets.append(new StatWidget("CPU"));
+  widgets.append(new StatWidget("RAM"));
+  widgets.append(new StatWidget("Disk"));
+  widgets.append(new StatWidget("Battery"));
+  for (int i = 0; i < widgets.size(); ++i) {
+    widgets[i]->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
+    widgets[i]->move(startX, startY + (i * 70));
+    widgets[i]->setAttribute(Qt::WA_DeleteOnClose);
+    widgets[i]->show();
+  }
+  QObject::connect(&app, &QApplication::aboutToQuit,
+                   [&]() { widgets.clear(); });
 
   return app.exec();
 }

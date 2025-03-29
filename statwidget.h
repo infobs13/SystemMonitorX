@@ -1,14 +1,14 @@
 #ifndef STATWIDGET_H
 #define STATWIDGET_H
 
-#include "qboxlayout.h"
+/*#include "qboxlayout.h"*/
 #include <QLabel>
 #include <QMouseEvent>
 #include <QProgressBar>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
-
+class QPushButton;
 class StatWidget : public QWidget {
   Q_OBJECT
 
@@ -19,6 +19,8 @@ public:
   bool eventFilter(QObject *obj, QEvent *event) override;
 
 protected:
+  void contextMenuEvent(QContextMenuEvent *event) override;
+
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
 private slots:
@@ -30,6 +32,8 @@ private:
   QPoint dragPosition;
   QTimer updateTimer;
   QString widgetName;
+  QPushButton *closeButton;
+  void openSettings();
   void updateCPUUsage();
   void updateRAMUsage();
   void updateDiskUsage();

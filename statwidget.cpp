@@ -2,9 +2,13 @@
 #include "qdebug.h"
 #include "qglobal.h"
 #include "qnamespace.h"
+#include <QAction>
 #include <QApplication>
+#include <QContextMenuEvent>
 #include <QDebug>
 #include <QFile>
+#include <QMenu>
+#include <QPushButton>
 #include <QStorageInfo>
 #include <QString>
 #include <QTextStream>
@@ -26,6 +30,7 @@ StatWidget::StatWidget(QString name, QWidget *parent)
   installEventFilter(this);
   connect(qApp, &QApplication::focusChanged, this,
           &StatWidget::ensureVisibility);
+  closeButton = new QPushButton("Close", this);
   QVBoxLayout *layout = new QVBoxLayout(this);
   layout->setContentsMargins(10, 10, 10, 10);
 
@@ -34,7 +39,6 @@ StatWidget::StatWidget(QString name, QWidget *parent)
   label->setStyleSheet("font-size: 16px; color: white;");
   layout->setSizeConstraint(QLayout::SetMinimumSize);
   layout->addWidget(label);
-
   progress = new QProgressBar(this);
   progress->setFixedHeight(5);
   progress->setStyleSheet(
@@ -224,7 +228,7 @@ void StatWidget::updateDiskUsage() {
     setText(QString("Disk: %1% Used").arg(usage, 0, 'f', 2));
   }
 }
-
+void StatWidget::openSettings() { qDebug() << "right click settings"; }
 void StatWidget::mousePressEvent(QMouseEvent *event) {
   if (event->button() == Qt::LeftButton) {
     dragPosition = event->globalPos() - frameGeometry().topLeft();
@@ -237,4 +241,18 @@ void StatWidget::mouseMoveEvent(QMouseEvent *event) {
     move(event->globalPos() - dragPosition);
     event->accept();
   }
+}
+
+void StatWidget::contextMenuEvent(QContextMenuEvent *event) {
+  QMenu contextMenu(this);
+  QAction *deleteAction = contextMenu.addAction("");
+  deleteAction->setIcon(QIcon::fromTheme("edit-delete"));
+  QAction *settingsAction = contextMenu.addAction("");
+  settingsAction->setIcon(QIcon::fromTheme("preferences-system"));
+  connect(deleteAction, &QAction::triggered, this, &StatWidget::close);
+  connect(settingsAction, &QAction::triggered, this, &StatWidget::openSettings);
+
+  QPoint widgetPos = this->mapToGlobal(QPoint(this->width(), 0));
+
+  contextMenu.exec(widgetPos);
 }
