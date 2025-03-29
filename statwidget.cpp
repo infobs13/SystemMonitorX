@@ -201,7 +201,7 @@ void StatWidget::updateBatteryStatus() {
           "QProgressBar::chunk { background: %1; border-radius: 2px; }")
           .arg(color));
   setValue(batteryLevel);
-  setText(QString("Battery: %1% <br>(%2)").arg(batteryLevel).arg(statusText));
+  setText(QString("Battery: %1%\n(%2)").arg(batteryLevel).arg(statusText));
 }
 #include <QStorageInfo>
 
